@@ -14,10 +14,13 @@ THAL = {"Normal": 1, "Fixed defect": 2, "Reversible defect": 3}
 YN = {"No": 0, "Yes": 1}
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner="Training models for the first time (1-2 min)...")
 def load(task):
     p = MODEL_DIR / f"{task}.joblib"
-    return joblib.load(p) if p.exists() else None
+    if not p.exists():
+        import train
+        train.run(task)
+    return joblib.load(p)
 
 
 def metrics(task):
